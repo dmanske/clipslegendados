@@ -2,12 +2,12 @@ import React from 'react';
 import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 
 const CHART_DATA = [
-  { name: 'Week 1', views: 120 },
-  { name: 'Week 2', views: 180 },
-  { name: 'Week 3', views: 150 },
-  { name: 'Week 4', views: 250 },
-  { name: 'Week 5', views: 210 },
-  { name: 'Week 6', views: 300 },
+  { name: 'Sem 1', views: 120 },
+  { name: 'Sem 2', views: 180 },
+  { name: 'Sem 3', views: 150 },
+  { name: 'Sem 4', views: 250 },
+  { name: 'Sem 5', views: 210 },
+  { name: 'Sem 6', views: 300 },
 ];
 
 const POPULAR_CLIPS = [
@@ -20,8 +20,8 @@ const Dashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-         <h1 className="text-gray-900 dark:text-white text-3xl font-black leading-tight">Dashboard</h1>
-         <p className="text-gray-500 dark:text-[#92adc9]">Welcome back, here's a look at your clip performance.</p>
+         <h1 className="text-gray-900 dark:text-white text-3xl font-black leading-tight">Painel</h1>
+         <p className="text-gray-500 dark:text-[#92adc9]">Bem-vindo de volta, aqui está o desempenho dos seus clipes.</p>
       </div>
 
       {/* Stats Row */}
@@ -31,11 +31,11 @@ const Dashboard: React.FC = () => {
             <span className="material-symbols-outlined text-3xl">visibility</span>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Total Views</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-white">1,254,890</p>
+            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Total de Visualizações</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">1.254.890</p>
             <p className="text-sm text-green-500 flex items-center gap-1">
               <span className="material-symbols-outlined text-base">arrow_upward</span>
-              <span>+12.5%</span>
+              <span>+12,5%</span>
             </p>
           </div>
         </div>
@@ -44,11 +44,11 @@ const Dashboard: React.FC = () => {
             <span className="material-symbols-outlined text-3xl">schedule</span>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Average Playback Time</p>
+            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Tempo Médio de Reprodução</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">2m 45s</p>
             <p className="text-sm text-red-500 flex items-center gap-1">
               <span className="material-symbols-outlined text-base">arrow_downward</span>
-              <span>-3.2%</span>
+              <span>-3,2%</span>
             </p>
           </div>
         </div>
@@ -57,9 +57,9 @@ const Dashboard: React.FC = () => {
             <span className="material-symbols-outlined text-3xl">movie</span>
           </div>
           <div>
-            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Total Clips</p>
+            <p className="text-sm text-gray-500 dark:text-[#92adc9]">Total de Clipes</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">78</p>
-            <p className="text-sm text-gray-400">+2 this month</p>
+            <p className="text-sm text-gray-400">+2 este mês</p>
           </div>
         </div>
       </div>
@@ -69,11 +69,11 @@ const Dashboard: React.FC = () => {
         {/* Chart Section */}
         <div className="lg:col-span-2 bg-white dark:bg-[#111a22] rounded-xl p-6 border border-gray-200 dark:border-[#324d67]">
             <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Engagement Trends</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Tendências de Engajamento</h3>
                 <div className="flex bg-gray-100 dark:bg-[#192633] rounded-lg p-1 gap-1">
-                    <button className="px-3 py-1 text-sm rounded-md text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-[#233648] transition-colors">Weekly</button>
-                    <button className="px-3 py-1 text-sm rounded-md bg-white dark:bg-[#233648] text-primary font-medium shadow-sm">Monthly</button>
-                    <button className="px-3 py-1 text-sm rounded-md text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-[#233648] transition-colors">Yearly</button>
+                    <button className="px-3 py-1 text-sm rounded-md text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-[#233648] transition-colors">Semanal</button>
+                    <button className="px-3 py-1 text-sm rounded-md bg-white dark:bg-[#233648] text-primary font-medium shadow-sm">Mensal</button>
+                    <button className="px-3 py-1 text-sm rounded-md text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-[#233648] transition-colors">Anual</button>
                 </div>
             </div>
             <div className="h-80 w-full">
@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
 
         {/* Popular Clips List */}
         <div className="bg-white dark:bg-[#111a22] rounded-xl p-6 border border-gray-200 dark:border-[#324d67]">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Most Popular Clips</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Clipes Mais Populares</h3>
             <div className="flex flex-col gap-4">
                 {POPULAR_CLIPS.map((clip, idx) => (
                     <div key={idx} className="flex items-center gap-4 group cursor-pointer">
@@ -104,7 +104,7 @@ const Dashboard: React.FC = () => {
                             <p className="text-xs text-gray-500 dark:text-[#92adc9]">{clip.artist}</p>
                             <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-[#92adc9] mt-1">
                                 <span className="material-symbols-outlined text-sm">visibility</span>
-                                <span>{clip.views} views</span>
+                                <span>{clip.views} visualizações</span>
                             </div>
                         </div>
                     </div>

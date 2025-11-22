@@ -1,5 +1,5 @@
 {
-  "name": "ClipSub Manager",
-  "description": "A comprehensive video clip management and subtitle editor platform featuring a public gallery and an admin dashboard.",
+  "name": "Gerenciador ClipSub",
+  "description": "Uma plataforma abrangente de gerenciamento de videoclipes e editor de legendas com uma galeria pública e um painel administrativo.",
   "requestFramePermissions": []
 }

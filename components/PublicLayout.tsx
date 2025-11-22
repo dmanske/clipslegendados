@@ -26,7 +26,7 @@ const PublicLayout: React.FC = () => {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/admin/dashboard" className="hidden md:flex items-center justify-center h-9 px-4 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary text-sm font-bold transition-colors">
-              Login
+              Entrar
             </Link>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden text-white">
               <span className="material-symbols-outlined">menu</span>
@@ -42,7 +42,7 @@ const PublicLayout: React.FC = () => {
            <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white">Sobre Mim</Link>
            <Link to="/collaborators" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white">Colaboradores</Link>
            <Link to="/request" onClick={() => setIsMobileMenuOpen(false)} className="text-white/80 hover:text-white">Solicitar Legenda</Link>
-           <Link to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-primary font-bold">Login Admin</Link>
+           <Link to="/admin/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-primary font-bold">Entrar como Admin</Link>
         </div>
       )}
 

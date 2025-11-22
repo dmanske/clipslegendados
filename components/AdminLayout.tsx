@@ -29,7 +29,7 @@ const AdminLayout: React.FC = () => {
             className={`flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg transition-colors ${isActive('/admin/dashboard') ? 'bg-primary/10 dark:bg-[#233648] text-primary dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#233648]'}`}
           >
             <span className="material-symbols-outlined">dashboard</span>
-            <p className="hidden md:block text-sm font-medium leading-normal">Dashboard</p>
+            <p className="hidden md:block text-sm font-medium leading-normal">Painel</p>
           </Link>
           
           <Link 
@@ -37,7 +37,7 @@ const AdminLayout: React.FC = () => {
             className={`flex items-center gap-3 px-3 py-3 md:py-2 rounded-lg transition-colors ${isActive('/admin/clips') || isActive('/admin/edit') || isActive('/admin/create') ? 'bg-primary/10 dark:bg-[#233648] text-primary dark:text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#233648]'}`}
           >
             <span className="material-symbols-outlined">movie</span>
-            <p className="hidden md:block text-sm font-medium leading-normal">Clips</p>
+            <p className="hidden md:block text-sm font-medium leading-normal">Clipes</p>
           </Link>
 
           <Link 
@@ -52,7 +52,7 @@ const AdminLayout: React.FC = () => {
         <div className="p-4 border-t border-gray-200 dark:border-[#324d67] mt-auto">
           <Link to="/admin/create" className="hidden md:flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 mb-4 hover:bg-primary/90 transition-colors">
             <span className="material-symbols-outlined text-xl">add</span>
-            <span className="truncate">Add New Clip</span>
+            <span className="truncate">Adicionar Clipe</span>
           </Link>
           
           <Link to="/admin/create" className="md:hidden flex items-center justify-center rounded-lg h-10 w-10 bg-primary text-white mb-4 mx-auto">
@@ -62,11 +62,11 @@ const AdminLayout: React.FC = () => {
           <div className="flex flex-col gap-1">
             <button className="flex items-center gap-3 px-3 py-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#233648] rounded-lg">
               <span className="material-symbols-outlined">settings</span>
-              <p className="hidden md:block text-sm font-medium leading-normal">Settings</p>
+              <p className="hidden md:block text-sm font-medium leading-normal">Configurações</p>
             </button>
             <button onClick={() => navigate('/')} className="flex items-center gap-3 px-3 py-2 cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#233648] rounded-lg w-full text-left">
               <span className="material-symbols-outlined">logout</span>
-              <p className="hidden md:block text-sm font-medium leading-normal">Logout</p>
+              <p className="hidden md:block text-sm font-medium leading-normal">Sair</p>
             </button>
           </div>
         </div>
