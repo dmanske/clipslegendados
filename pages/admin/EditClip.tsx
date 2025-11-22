@@ -1,18 +1,30 @@
-
 import React, { useState, useRef, ChangeEvent } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { SubtitleLine } from '../../types';
+import { supabase, isSupabaseConfigured } from '../../services/supabaseClient';
 
 const EditClip: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  
+  // Form States
+  const [title, setTitle] = useState(id ? "Aurora Live Performance" : "");
+  const [artist, setArtist] = useState(id ? "Artist A" : "");
+  const [description, setDescription] = useState(id ? "A captivating live performance..." : "");
+  const [tags, setTags] = useState(id ? "live, music" : "");
+  
+  // Subtitle State
   const [subtitles, setSubtitles] = useState<SubtitleLine[]>([
     { id: '1', startTime: '00:10.240', endTime: '00:12.800', text: '(Music starts playing)' },
     { id: '2', startTime: '00:13.500', endTime: '00:16.120', text: 'I can see it in your eyes...' },
     { id: '3', startTime: '00:16.800', endTime: '00:19.300', text: '...the fire that burns inside.' },
   ]);
 
+  // Upload States
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0); // 0 to 100
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleVideoUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -42,8 +54,80 @@ const EditClip: React.FC = () => {
     setSubtitles(subtitles.map(s => s.id === id ? { ...s, [field]: value } : s));
   };
 
+  const handlePublish = async () => {
+    if (!isSupabaseConfigured()) {
+      alert("ERRO: Supabase não configurado. Verifique as variáveis de ambiente (VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY).");
+      return;
+    }
+
+    if (!videoFile && !id) {
+      alert("Por favor, selecione um vídeo para fazer upload.");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadProgress(10);
+
+    try {
+      let videoUrl = "";
+
+      // 1. Upload Video to Supabase Storage
+      if (videoFile && supabase) {
+        const fileName = `${Date.now()}_${videoFile.name.replace(/\s/g, '_')}`;
+        
+        const { data, error: uploadError } = await supabase.storage
+          .from('videos') // Certifique-se de criar este bucket 'videos' no painel do Supabase
+          .upload(fileName, videoFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        // Get Public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('videos')
+          .getPublicUrl(fileName);
+          
+        videoUrl = publicUrl;
+        setUploadProgress(50);
+      }
+
+      // 2. Insert Metadata into Database
+      if (supabase) {
+        const { error: dbError } = await supabase
+          .from('clips') // Certifique-se de criar esta tabela 'clips'
+          .insert([
+            {
+              title,
+              artist,
+              description,
+              tags: tags.split(',').map(t => t.trim()),
+              video_url: videoUrl,
+              // thumbnail_url: ... (similar logic for thumbnail)
+              status: 'Published',
+              subtitles_json: subtitles // Assuming you add a jsonb column for subtitles
+            }
+          ]);
+
+        if (dbError) throw dbError;
+      }
+
+      setUploadProgress(100);
+      alert("Clipe publicado com sucesso!");
+      navigate('/admin/clips');
+
+    } catch (error: any) {
+      console.error('Erro ao publicar:', error);
+      alert(`Erro ao publicar: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
+      {/* Header */}
       <div className="flex flex-wrap justify-between items-start gap-4 mb-8">
         <div className="flex min-w-72 flex-col gap-2">
           <p className="text-gray-900 dark:text-white text-3xl font-black leading-tight">{id ? 'Editar Clipe' : 'Novo Clipe'}</p>
@@ -59,12 +143,32 @@ const EditClip: React.FC = () => {
             <button className="flex items-center justify-center h-10 px-4 rounded-lg bg-gray-200 dark:bg-[#233648] text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-300 dark:hover:bg-[#324d67] transition-colors">
                 Salvar Rascunho
             </button>
-            <button className="flex items-center justify-center h-10 px-4 rounded-lg bg-primary text-white font-bold text-sm gap-2 hover:bg-primary/90 transition-colors">
-                <span className="material-symbols-outlined text-xl">publish</span>
-                <span>Publicar</span>
+            <button 
+              onClick={handlePublish}
+              disabled={isUploading}
+              className={`flex items-center justify-center h-10 px-4 rounded-lg bg-primary text-white font-bold text-sm gap-2 hover:bg-primary/90 transition-colors ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+                {isUploading ? (
+                   <>
+                     <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                     <span>Enviando {uploadProgress}%</span>
+                   </>
+                ) : (
+                   <>
+                     <span className="material-symbols-outlined text-xl">publish</span>
+                     <span>Publicar</span>
+                   </>
+                )}
             </button>
         </div>
       </div>
+
+      {!isSupabaseConfigured() && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 rounded" role="alert">
+          <p className="font-bold">Atenção</p>
+          <p>As chaves do Supabase não foram detectadas. O botão "Publicar" não funcionará. Configure <code>VITE_SUPABASE_URL</code> e <code>VITE_SUPABASE_ANON_KEY</code>.</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Metadata Form */}
@@ -75,7 +179,7 @@ const EditClip: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Arquivo de Vídeo</h3>
                 <div 
                     className="flex flex-col justify-center items-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-[#324d67] rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800/20 hover:bg-gray-100 dark:hover:bg-gray-800/40 transition-colors group"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => !isUploading && fileInputRef.current?.click()}
                 >
                     <input 
                         type="file" 
@@ -83,6 +187,7 @@ const EditClip: React.FC = () => {
                         className="hidden" 
                         ref={fileInputRef}
                         onChange={handleVideoUpload}
+                        disabled={isUploading}
                     />
                     <div className="text-center p-4">
                         {videoFile ? (
@@ -97,7 +202,8 @@ const EditClip: React.FC = () => {
                                         setVideoPreview(null);
                                         if (fileInputRef.current) fileInputRef.current.value = '';
                                     }}
-                                    className="mt-2 text-xs text-red-500 hover:underline font-medium"
+                                    disabled={isUploading}
+                                    className="mt-2 text-xs text-red-500 hover:underline font-medium disabled:opacity-50"
                                  >
                                     Remover
                                  </button>
@@ -118,19 +224,39 @@ const EditClip: React.FC = () => {
                 <div className="flex flex-col gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Título</label>
-                        <input type="text" defaultValue={id ? "Aurora Live Performance" : ""} className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" />
+                        <input 
+                          type="text" 
+                          value={title} 
+                          onChange={(e) => setTitle(e.target.value)}
+                          className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" 
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Fonte/Artista</label>
-                        <input type="text" defaultValue={id ? "Artist A" : ""} className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" />
+                        <input 
+                          type="text" 
+                          value={artist}
+                          onChange={(e) => setArtist(e.target.value)}
+                          className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" 
+                        />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Descrição</label>
-                        <textarea rows={4} defaultValue={id ? "A captivating live performance..." : ""} className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary"></textarea>
+                        <textarea 
+                          rows={4} 
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary"
+                        ></textarea>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Tags</label>
-                        <input type="text" defaultValue={id ? "live, music" : ""} className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" />
+                        <input 
+                          type="text" 
+                          value={tags}
+                          onChange={(e) => setTags(e.target.value)}
+                          className="w-full rounded-lg bg-gray-50 dark:bg-[#233648] border-gray-200 dark:border-[#324d67] text-gray-900 dark:text-white focus:ring-primary focus:border-primary" 
+                        />
                     </div>
                 </div>
             </div>

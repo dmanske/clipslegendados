@@ -8,6 +8,8 @@ export interface Clip {
   description: string;
   tags: string[];
   duration?: string;
+  video_url?: string;
+  release_year?: number;
 }
 
 export interface SubtitleLine {
@@ -34,4 +36,12 @@ export interface Stat {
   change: string;
   isPositive: boolean;
   icon: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  full_name?: string;
+  avatar_url?: string;
+  role: 'admin' | 'user';
 }
