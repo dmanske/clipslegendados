@@ -15,6 +15,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   useEffect(() => {
     if (!supabase) return;
 
+    console.log('[NotificationContext] Setting up realtime subscription');
+    
     // Escutar mudanças na tabela 'clips' (INSERT)
     // Isso permite saber quando um novo clipe é adicionado em tempo real
     const channel = supabase
@@ -23,6 +25,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'clips' },
         (payload: any) => {
+          console.log('[NotificationContext] New clip detected:', payload.new?.title);
           // Verifica se o novo clipe está publicado
           if (payload.new && payload.new.status === 'Published') {
             showNotification(
@@ -35,20 +38,20 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       .subscribe();
 
     return () => {
+      console.log('[NotificationContext] Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, []); // Dependências vazias - só executa uma vez
 
-  const showNotification = (message: string, link?: string) => {
+  const showNotification = React.useCallback((message: string, link?: string) => {
+    console.log('[NotificationContext] Showing notification:', message);
     setNotification({ message, link });
     
     // Auto-dismiss após 6 segundos
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setNotification(null);
     }, 6000);
-
-    return () => clearTimeout(timer);
-  };
+  }, []); // useCallback para evitar re-criação da função
 
   return (
     <NotificationContext.Provider value={{ showNotification }}>

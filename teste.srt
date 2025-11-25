@@ -1,0 +1,19 @@
+1
+00:00:10,240 --> 00:00:12,800
+Primeira linha da legenda
+
+2
+00:00:13,500 --> 00:00:16,120
+Segunda linha da legenda
+
+3
+00:00:17,000 --> 00:00:19,500
+Terceira linha da legenda
+
+4
+00:00:20,000 --> 00:00:22,500
+Quarta linha da legenda
+
+5
+00:00:23,000 --> 00:00:25,500
+Quinta linha da legenda

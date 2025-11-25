@@ -1,73 +1,122 @@
 import React from 'react';
 
-const COLLABORATORS = [
+const FAVORITE_ARTISTS = [
   {
-    name: "Ana Silva",
-    role: "Legendista & Tradutora",
-    desc: "Ana é especialista em tradução audiovisual, garantindo que cada legenda capture a essência do diálogo original com precisão e arte.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAnRZYoXih5_0ShUQBSHA-kyiUdJOPvNezuE3DWrVS0HS2BGYB3x6A8EYM5OuZGzh2FNHl3J3cC5KfLAjq2C00-sNmNhgTU641GpJeX1KE3aZEizaI5ppcp_Pr4HC2ytK79dVQEtdg5UXqGyYcmEceMim3JgLpuUAwmyyeeBKLFqBcc-7PADp6STB8SZvbQ7hzTuaCmxRApgmQWz8-nDbdUH9GQ3q1BX6GuqYruKYJXbwzNUWg4W9wKASMXDPrcxZZIteEKGIAk12_V"
+    name: "Elvis Presley",
+    genre: "Rock and Roll",
+    desc: "O Rei do Rock and Roll. Ícone cultural que revolucionou a música popular no século XX com seu estilo único e carisma incomparável.",
+    img: "https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/9d9beaf1-272f-5d92-add2-a6fecb9c179a/2c60d9c8-128a-56cf-b285-d993bd1c64f3.jpg",
+    imgPosition: "center",
+    country: "🇺🇸 Estados Unidos",
+    highlights: "Can't Help Falling in Love, Suspicious Minds, Jailhouse Rock"
   },
   {
-    name: "Carlos Pereira",
-    role: "Editor de Vídeo",
-    desc: "Com um olhar atento para detalhes, Carlos transforma clipes brutos em obras de arte polidas, sincronizando perfeitamente áudio e vídeo.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBsa_lS29BSGRFTL1N-c4ibAx8aQ3XTEt3-XZTjD3d317hSwwwXiIq4hEscrJOFqIzBk_F6Z7zjOVpmRPc2AQkJ0KrAE_JetnkevHFYCtfx_9Mvvuy_MWOez7xqjrB19CS50p-uaBFfxNyZP-eW_p5XNmzSKv2VqK-YLBiZmS3lm2Gu3PukcEGNZNIEHWiJFzbOypV2E5j_lGF4zVmV0AOTsi5jlCsPQnoT3L0eyHGNtz0plRNSNvrIM3pagL_yEYt_lZ0AuqNdSUij"
+    name: "Brandon Lake",
+    genre: "Contemporary Christian Music",
+    desc: "Cantor e compositor americano conhecido por seu trabalho com Maverick City Music e Bethel Music. Vencedor de múltiplos Grammy Awards.",
+    img: "https://cdn-iledama.nitrocdn.com/WRlNaygPDLRwrIEvFlFzQtVwcilKJUBl/assets/images/optimized/rev-8ba3af5/delafontagency.com/wp-content/uploads/2024/11/brandon-lake-L5e.jpg",
+    imgPosition: "center",
+    country: "🇺🇸 Estados Unidos",
+    highlights: "House of Miracles, Gratitude, RATTLE!"
   },
   {
-    name: "Beatriz Costa",
-    role: "Tradutora & Pesquisadora",
-    desc: "Beatriz mergulha fundo no contexto cultural de cada clipe para fornecer traduções que são não apenas precisas, mas também ressonantes.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuClzY14vrjoU_QBSBSnjI0Xs2U-VCFpaxdzETtwY3VtCFl0PL6nY1rCPtaGkunjvfJa7CfbEe2b7RBZtx8pPQSM-aoEIUJuFVr5ejeHB1DkcZC27PifcqzMq30FJCd4Wgvhuqmp8xE5W4ZWobsWHuXG-4VqiZmfvU7pv5CvJKoF8L4SdYMVi-z8TQLFhJpUBICAxrogeb5I-iP7rPUjQ_hnd0WCCKspqcW94ib0uoRF69dEHY_jqSDE62waxfOzlNUVctPX1FcACG7-"
+    name: "Michael W. Smith",
+    genre: "Contemporary Christian Music",
+    desc: "Lenda da música cristã contemporânea com mais de 40 anos de carreira. Três vezes vencedor do Grammy e autor de clássicos atemporais.",
+    img: "https://photos.bandsintown.com/large/17665643.jpeg",
+    imgPosition: "center",
+    country: "🇺🇸 Estados Unidos",
+    highlights: "Place in This World, Friends, Above All"
   },
   {
-    name: "Daniel Souza",
-    role: "Designer Gráfico",
-    desc: "Daniel é o cérebro por trás da identidade visual do site, criando gráficos e miniaturas que capturam a atenção e contam uma história.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBhDJwRyQPW8di5daTph4uPuUOFMoXNSOvxYDGDsOqHEiFOheQGJbKycp_YElo_-tHK8Yx3qlRUWiekFdwB96p4hIMCLdyvtpzxwS6bP1ttHF7FwO_FAxw8udXcwXeqKcMeQO9HmLqTm8aWCdonp2MoB9LxXiJlFWi8N5eLJGLVkKBqnzf-KRy5GTVa-EjsMIaRKsSiRy1aCl1RgwNe3yz65JblAtrpbJ9zwEXjOp3lAt8mAZmxIN6mqZxTUf89APBnqHsqj9GrDsME"
+    name: "Queen",
+    genre: "Rock",
+    desc: "Banda britânica lendária liderada por Freddie Mercury. Conhecidos por sua teatralidade, harmonias vocais complexas e hits inesquecíveis.",
+    img: "https://teachrock.org/wp-content/uploads/Queen-1980.jpg",
+    imgPosition: "center",
+    country: "🇬🇧 Reino Unido",
+    highlights: "Bohemian Rhapsody, We Are The Champions, Don't Stop Me Now"
   },
   {
-    name: "Juliana Martins",
-    role: "Gerente de Comunidade",
-    desc: "Juliana conecta a nossa comunidade, gerenciando feedbacks e garantindo que as vozes dos nossos usuários sejam ouvidas e valorizadas.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCBaYlj12oHTLBjdU3QKnAPLSTZxmAYBD6DkZUnq-MnuTwwY5EAI4X91Ch8VqInRHaccKXBEc1_aKfEmbOhzl2BbfJWnsaTeXtNlPj5W2rQD1axGgMilp-hZDuS-PcDpO12jIXo4P9nmN5bA7EQ5kvuWdcpoK1SbxXD4OiWOeJUogjsiMp7qiktkF2iwwXIK1jGzpgr0xBJnVKfwuin8zYegzMMr2Tyyy8Bd7ZV4qBOWUD2C9534sTAgGlaWxuoGgnPukrBqY_Psqaf"
+    name: "Bon Jovi",
+    genre: "Rock / Hard Rock",
+    desc: "Banda americana de rock formada em 1983. Conhecidos por seus hinos de arena e baladas poderosas que definiram os anos 80 e 90.",
+    img: "https://es.web.img3.acsta.net/pictures/18/09/18/15/54/1593305.jpg",
+    imgPosition: "center",
+    country: "🇺🇸 Estados Unidos",
+    highlights: "Livin' on a Prayer, It's My Life, Always"
   },
   {
-    name: "Ricardo Lima",
-    role: "Engenheiro de Som",
-    desc: "Ricardo garante que cada clipe tenha um som cristalino, cuidando da mixagem e masterização de áudio com expertise técnica.",
-    img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAJgWTP4Sa2EfEcBQIh6qD8azHPYIddeCNfeUmeRxuoheqPafM-mmiByGseqgqFKqWhylxN-fKnbP94pDVyau5T_E4R4G3T1EeNWj7geNvnu0MGfm_wD7qbvs8urQaEmXsVcbIkz49KP94tuKvolhYTSUQKcEhFlcV-zyafrbQBCQEt2fIZZ_fMlm5hD6O0-9klPp52xpYRxgy0W_MlXfV608z-0j5Woww65wUlmkFD78oXddQ1N3NQCwyT1r4qZXDQAod27xn17zX0"
+    name: "Bryan Adams",
+    genre: "Rock / Pop Rock",
+    desc: "Cantor, compositor e fotógrafo canadense. Suas baladas românticas e rock energético conquistaram o mundo desde os anos 80.",
+    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/BryAdamsMargate130624_%2839_of_43%29_%2853789411882%29_Cropped.jpg/960px-BryAdamsMargate130624_%2839_of_43%29_%2853789411882%29_Cropped.jpg",
+    imgPosition: "center top",
+    country: "🇨🇦 Canadá",
+    highlights: "Summer of '69, (Everything I Do) I Do It for You, Heaven"
   }
 ];
 
 const Collaborators: React.FC = () => {
   return (
     <div className="w-full max-w-6xl px-6 py-12">
-       <div className="text-center mb-12">
-         <h1 className="text-white text-4xl font-black mb-4">Conheça Nossos Colaboradores</h1>
-         <p className="text-[#92adc9]">As pessoas talentosas que tornam este projeto possível.</p>
-       </div>
+      <div className="text-center mb-12">
+        <h1 className="text-white text-4xl font-black mb-4">Artistas Favoritos</h1>
+        <p className="text-[#92adc9]">Os artistas que inspiram e moldam a trilha sonora da minha vida.</p>
+      </div>
 
-       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {COLLABORATORS.map((person, idx) => (
-            <div key={idx} className="flex flex-col gap-4 text-center p-8 bg-[#111a22]/50 rounded-xl border border-[#324d67] hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
-               <div className="px-4">
-                  <div 
-                    className="w-32 h-32 mx-auto bg-center bg-no-repeat aspect-square bg-cover rounded-full border-2 border-transparent group-hover:border-primary transition-colors" 
-                    style={{backgroundImage: `url("${person.img}")`}}
-                  ></div>
-               </div>
-               <div>
-                 <h3 className="text-white text-lg font-bold">{person.name}</h3>
-                 <p className="text-primary text-sm font-medium">{person.role}</p>
-                 <p className="text-[#92adc9] text-sm mt-3 leading-relaxed">{person.desc}</p>
-               </div>
-               <div className="flex justify-center gap-4 mt-auto pt-4">
-                  <a href="#" className="text-gray-500 hover:text-primary transition-colors"><span className="material-symbols-outlined">language</span></a>
-                  <a href="#" className="text-gray-500 hover:text-primary transition-colors"><span className="material-symbols-outlined">alternate_email</span></a>
-               </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {FAVORITE_ARTISTS.map((artist, idx) => (
+          <div key={idx} className="flex flex-col gap-4 p-6 bg-[#111a22]/50 rounded-xl border border-[#324d67] hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+            {/* Artist Image */}
+            <div className="relative">
+              <div
+                className="w-full aspect-square bg-cover rounded-lg border-2 border-transparent group-hover:border-primary transition-colors shadow-lg"
+                style={{
+                  backgroundImage: `linear-gradient(to bottom, transparent 60%, rgba(17, 26, 34, 0.9) 100%), url("${artist.img}")`,
+                  backgroundPosition: artist.imgPosition || 'center',
+                  backgroundColor: '#1a1a2e'
+                }}
+              >
+                {/* Fallback gradient if image fails */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-lg -z-10" />
+              </div>
+              <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span className="text-xs text-white font-medium">{artist.country}</span>
+              </div>
             </div>
-          ))}
-       </div>
+
+            {/* Artist Info */}
+            <div className="flex-1">
+              <h3 className="text-white text-xl font-black mb-1">{artist.name}</h3>
+              <p className="text-primary text-xs font-bold uppercase tracking-wider mb-3">{artist.genre}</p>
+              <p className="text-[#92adc9] text-sm leading-relaxed mb-3">{artist.desc}</p>
+
+              {/* Highlights */}
+              <div className="bg-[#192633] rounded-lg p-3 border border-[#324d67]/50">
+                <p className="text-xs text-gray-500 font-semibold mb-1">Destaques:</p>
+                <p className="text-xs text-gray-300 leading-relaxed">{artist.highlights}</p>
+              </div>
+            </div>
+
+            {/* Music Note Icon */}
+            <div className="flex justify-center pt-2">
+              <span className="material-symbols-outlined text-primary/30 text-4xl group-hover:text-primary/60 transition-colors">music_note</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer Note */}
+      <div className="mt-12 text-center">
+        <div className="inline-block bg-[#111a22] rounded-lg p-6 border border-[#324d67]">
+          <span className="material-symbols-outlined text-primary text-3xl mb-2">favorite</span>
+          <p className="text-gray-300 text-sm max-w-2xl">
+            Cada um desses artistas tem um lugar especial na minha jornada musical.
+            Suas músicas me inspiram a criar legendas que capturem a essência e emoção de cada performance.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

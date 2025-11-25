@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limpar Tudo - Reset Completo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0f16;
+            color: white;
+        }
+        .container {
+            background: #1a2332;
+            border: 2px solid #324d67;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        h1 {
+            color: #00d4ff;
+            margin-top: 0;
+        }
+        button {
+            background: #00d4ff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #00b8e6;
+        }
+        button.danger {
+            background: #ef4444;
+        }
+        button.danger:hover {
+            background: #dc2626;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #0a0f16;
+            border-radius: 8px;
+            border: 1px solid #324d67;
+        }
+        .success {
+            color: #10b981;
+        }
+        .warning {
+            color: #f59e0b;
+        }
+        .info {
+            background: #1e3a8a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Limpar Tudo - Reset Completo</h1>
+        
+        <div class="info">
+            <strong>⚠️ ATENÇÃO:</strong> Isso vai limpar TODOS os dados de autenticação, incluindo:
+            <ul>
+                <li>Sessões do Supabase</li>
+                <li>Tokens do Google OAuth</li>
+                <li>LocalStorage completo</li>
+                <li>SessionStorage completo</li>
+                <li>Cookies do domínio</li>
+            </ul>
+        </div>
+
+        <button onclick="limparTudo()">🧹 Limpar Tudo Agora</button>
+        <button onclick="limparSupabase()">🗄️ Limpar Apenas Supabase</button>
+        <button onclick="limparGoogle()">🔐 Limpar Apenas Google OAuth</button>
+        <button class="danger" onclick="limparERecarregar()">💥 Limpar Tudo e Recarregar</button>
+
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function mostrarResultado(mensagem, tipo = 'success') {
+            const result = document.getElementById('result');
+            result.style.display = 'block';
+            result.className = 'result ' + tipo;
+            result.innerHTML = mensagem;
+        }
+
+        function limparSupabase() {
+            console.log('🧹 Limpando dados do Supabase...');
+            
+            // Limpar todas as chaves do Supabase no localStorage
+            const keys = Object.keys(localStorage);
+            let count = 0;
+            keys.forEach(key => {
+                if (key.includes('supabase') || key.includes('sb-')) {
+                    localStorage.removeItem(key);
+                    count++;
+                    console.log('Removido:', key);
+                }
+            });
+
+            // Limpar sessionStorage também
+            const sessionKeys = Object.keys(sessionStorage);
+            sessionKeys.forEach(key => {
+                if (key.includes('supabase') || key.includes('sb-')) {
+                    sessionStorage.removeItem(key);
+                    count++;
+                    console.log('Removido (session):', key);
+                }
+            });
+
+            mostrarResultado(`✅ ${count} itens do Supabase removidos!<br>Recarregue a página (F5) para aplicar.`, 'success');
+        }
+
+        function limparGoogle() {
+            console.log('🔐 Limpando dados do Google OAuth...');
+            
+            // Limpar tokens do Google
+            const keys = Object.keys(localStorage);
+            let count = 0;
+            keys.forEach(key => {
+                if (key.includes('google') || key.includes('oauth') || key.includes('gapi')) {
+                    localStorage.removeItem(key);
+                    count++;
+                    console.log('Removido:', key);
+                }
+            });
+
+            // Limpar cookies do Google
+            document.cookie.split(";").forEach(function(c) { 
+                if (c.includes('google') || c.includes('oauth') || c.includes('g_state')) {
+                    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    count++;
+                }
+            });
+
+            mostrarResultado(`✅ ${count} itens do Google removidos!<br>Recarregue a página (F5) para aplicar.`, 'success');
+        }
+
+        function limparTudo() {
+            console.log('💥 LIMPANDO TUDO...');
+            
+            let mensagens = [];
+
+            // 1. Limpar localStorage
+            const localCount = localStorage.length;
+            localStorage.clear();
+            mensagens.push(`✅ ${localCount} itens do localStorage removidos`);
+            console.log('✅ localStorage limpo');
+
+            // 2. Limpar sessionStorage
+            const sessionCount = sessionStorage.length;
+            sessionStorage.clear();
+            mensagens.push(`✅ ${sessionCount} itens do sessionStorage removidos`);
+            console.log('✅ sessionStorage limpo');
+
+            // 3. Limpar todos os cookies
+            let cookieCount = 0;
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                cookieCount++;
+            });
+            mensagens.push(`✅ ${cookieCount} cookies removidos`);
+            console.log('✅ Cookies limpos');
+
+            // 4. Limpar cache do IndexedDB (usado pelo Supabase)
+            if (window.indexedDB) {
+                indexedDB.databases().then(dbs => {
+                    dbs.forEach(db => {
+                        if (db.name && (db.name.includes('supabase') || db.name.includes('firebaseLocalStorage'))) {
+                            indexedDB.deleteDatabase(db.name);
+                            mensagens.push(`✅ Database ${db.name} removido`);
+                            console.log('✅ IndexedDB limpo:', db.name);
+                        }
+                    });
+                });
+            }
+
+            mostrarResultado(
+                '<strong>🎉 TUDO LIMPO!</strong><br><br>' + 
+                mensagens.join('<br>') + 
+                '<br><br><strong>⚠️ Recarregue a página (F5) para aplicar as mudanças</strong>',
+                'success'
+            );
+        }
+
+        function limparERecarregar() {
+            if (confirm('Isso vai limpar TUDO e recarregar a página. Continuar?')) {
+                limparTudo();
+                setTimeout(() => {
+                    window.location.href = 'http://localhost:8080/';
+                }, 1000);
+            }
+        }
+
+        // Mostrar informações ao carregar
+        window.onload = function() {
+            console.log('📊 Informações atuais:');
+            console.log('localStorage items:', localStorage.length);
+            console.log('sessionStorage items:', sessionStorage.length);
+            console.log('Cookies:', document.cookie.split(';').length);
+            
+            // Listar chaves do localStorage
+            console.log('\n📦 Chaves no localStorage:');
+            Object.keys(localStorage).forEach(key => {
+                console.log('  -', key);
+            });
+        };
+    </script>
+</body>
+</html>

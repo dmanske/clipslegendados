@@ -3,6 +3,7 @@ import { supabase, isSupabaseConfigured } from '../../services/supabaseClient';
 
 interface CommentData {
   id: string;
+  clip_id: string;
   user_name: string;
   user_email: string;
   content: string;
@@ -59,7 +60,7 @@ const Comments: React.FC = () => {
     }
   };
 
-  const handleUpdateStatus = async (id: string, newStatus: 'approved' | 'rejected') => {
+  const handleUpdateStatus = async (id: string, newStatus: 'approved' | 'rejected' | 'read') => {
     // Optimistic update
     if (!isSupabaseConfigured()) {
         setComments(prev => prev.filter(c => c.id !== id));
@@ -161,10 +162,25 @@ const Comments: React.FC = () => {
                                 <div className="mt-4 p-3 bg-gray-100 dark:bg-[#192633] rounded-lg text-xs flex items-center gap-2 w-fit">
                                     <span className="material-symbols-outlined text-base text-gray-500">movie</span>
                                     <span className="text-gray-500">Comentou em:</span>
-                                    <span className="font-bold text-primary">{comment.clips?.title || 'Clipe Desconhecido'}</span>
+                                    <a 
+                                        href={`/app/clip/${comment.clip_id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="font-bold text-primary hover:underline flex items-center gap-1"
+                                    >
+                                        {comment.clips?.title || 'Clipe Desconhecido'}
+                                        <span className="material-symbols-outlined text-sm">open_in_new</span>
+                                    </a>
                                 </div>
 
                                 <div className="flex gap-3 mt-4">
+                                    <button 
+                                        onClick={() => handleUpdateStatus(comment.id, 'read')}
+                                        className="flex items-center justify-center gap-1 px-4 h-8 rounded-lg bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 font-bold text-xs transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-base">done</span>
+                                        Marcar como Lido
+                                    </button>
                                     <button 
                                         onClick={() => handleUpdateStatus(comment.id, 'approved')}
                                         className="flex items-center justify-center gap-1 px-4 h-8 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20 font-bold text-xs transition-colors"

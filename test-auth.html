@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Autenticação - Debug</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .card {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #3a3a3a;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        h2 {
+            color: #2196F3;
+            font-size: 18px;
+            margin-top: 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.danger {
+            background: #f44336;
+        }
+        button.danger:hover {
+            background: #da190b;
+        }
+        pre {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border: 1px solid #3a3a3a;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.ok {
+            background: #4CAF50;
+        }
+        .status.error {
+            background: #f44336;
+        }
+        .status.warning {
+            background: #ff9800;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Teste de Autenticação - Debug</h1>
+    
+    <div class="card">
+        <h2>1. Verificar Configuração</h2>
+        <button onclick="checkConfig()">Verificar Configuração</button>
+        <pre id="config-result">Clique no botão para verificar...</pre>
+    </div>
+
+    <div class="card">
+        <h2>2. Verificar LocalStorage</h2>
+        <button onclick="checkLocalStorage()">Ver LocalStorage</button>
+        <button class="danger" onclick="clearLocalStorage()">Limpar LocalStorage</button>
+        <pre id="storage-result">Clique no botão para verificar...</pre>
+    </div>
+
+    <div class="card">
+        <h2>3. Verificar Sessão Atual</h2>
+        <button onclick="checkSession()">Verificar Sessão</button>
+        <pre id="session-result">Clique no botão para verificar...</pre>
+    </div>
+
+    <div class="card">
+        <h2>4. Testar Conexão com Supabase</h2>
+        <button onclick="testSupabase()">Testar Conexão</button>
+        <pre id="supabase-result">Clique no botão para verificar...</pre>
+    </div>
+
+    <div class="card">
+        <h2>5. Reset Completo</h2>
+        <button class="danger" onclick="fullReset()">⚠️ Reset Completo (Logout + Limpar Tudo)</button>
+        <pre id="reset-result">Isso vai fazer logout e limpar todo o cache.</pre>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // Tenta pegar as variáveis de ambiente
+        const SUPABASE_URL = localStorage.getItem('test_supabase_url') || prompt('Cole a VITE_SUPABASE_URL:');
+        const SUPABASE_KEY = localStorage.getItem('test_supabase_key') || prompt('Cole a VITE_SUPABASE_ANON_KEY:');
+
+        if (SUPABASE_URL && SUPABASE_KEY) {
+            localStorage.setItem('test_supabase_url', SUPABASE_URL);
+            localStorage.setItem('test_supabase_key', SUPABASE_KEY);
+        }
+
+        const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true,
+                flowType: 'pkce'
+            }
+        }) : null;
+
+        window.checkConfig = () => {
+            const result = {
+                supabaseUrl: SUPABASE_URL ? '✅ Configurado' : '❌ Não configurado',
+                supabaseKey: SUPABASE_KEY ? '✅ Configurado' : '❌ Não configurado',
+                supabaseClient: supabase ? '✅ Cliente criado' : '❌ Cliente não criado',
+                currentUrl: window.location.href,
+                userAgent: navigator.userAgent
+            };
+            document.getElementById('config-result').textContent = JSON.stringify(result, null, 2);
+        };
+
+        window.checkLocalStorage = () => {
+            const items = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('supabase') || key.includes('auth')) {
+                    items[key] = localStorage.getItem(key).substring(0, 100) + '...';
+                }
+            }
+            document.getElementById('storage-result').textContent = JSON.stringify(items, null, 2);
+        };
+
+        window.clearLocalStorage = () => {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.includes('supabase') || key.includes('auth')) {
+                    keys.push(key);
+                }
+            }
+            keys.forEach(key => localStorage.removeItem(key));
+            document.getElementById('storage-result').textContent = `✅ Removidos ${keys.length} itens:\n${keys.join('\n')}`;
+        };
+
+        window.checkSession = async () => {
+            if (!supabase) {
+                document.getElementById('session-result').textContent = '❌ Supabase não configurado';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                const result = {
+                    hasSession: !!data.session,
+                    user: data.session?.user?.email || 'Nenhum usuário',
+                    expiresAt: data.session?.expires_at || 'N/A',
+                    error: error?.message || 'Nenhum erro'
+                };
+                document.getElementById('session-result').textContent = JSON.stringify(result, null, 2);
+            } catch (err) {
+                document.getElementById('session-result').textContent = '❌ Erro: ' + err.message;
+            }
+        };
+
+        window.testSupabase = async () => {
+            if (!supabase) {
+                document.getElementById('supabase-result').textContent = '❌ Supabase não configurado';
+                return;
+            }
+
+            try {
+                // Testa conexão básica
+                const { data, error } = await supabase.from('profiles').select('count').limit(1);
+                
+                const result = {
+                    connection: error ? '❌ Erro de conexão' : '✅ Conectado',
+                    error: error?.message || 'Nenhum erro',
+                    hint: error?.hint || 'N/A'
+                };
+                document.getElementById('supabase-result').textContent = JSON.stringify(result, null, 2);
+            } catch (err) {
+                document.getElementById('supabase-result').textContent = '❌ Erro: ' + err.message;
+            }
+        };
+
+        window.fullReset = async () => {
+            if (!confirm('Tem certeza? Isso vai fazer logout e limpar todo o cache.')) {
+                return;
+            }
+
+            try {
+                if (supabase) {
+                    await supabase.auth.signOut();
+                }
+                localStorage.clear();
+                sessionStorage.clear();
+                document.getElementById('reset-result').textContent = '✅ Reset completo realizado!\n\nRecarregue a página para testar novamente.';
+            } catch (err) {
+                document.getElementById('reset-result').textContent = '❌ Erro: ' + err.message;
+            }
+        };
+
+        // Auto-check na inicialização
+        window.checkConfig();
+    </script>
+</body>
+</html>

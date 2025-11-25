@@ -10,6 +10,8 @@ export interface Clip {
   duration?: string;
   video_url?: string;
   release_year?: number;
+  delay?: number;
+  subtitled_by?: string;
 }
 
 export interface SubtitleLine {
@@ -43,5 +45,5 @@ export interface UserProfile {
   email: string;
   full_name?: string;
   avatar_url?: string;
-  role: 'admin' | 'user';
+  roles?: ('admin' | 'moderator' | 'user')[];
 }

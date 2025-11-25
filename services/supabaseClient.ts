@@ -8,7 +8,14 @@ const supabaseKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
 
 // Evita crash se as chaves não existirem (modo demonstração)
 export const supabase = (supabaseUrl && supabaseKey) 
-  ? createClient(supabaseUrl, supabaseKey) 
+  ? createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce'
+      }
+    }) 
   : null;
 
 export const isSupabaseConfigured = () => {
